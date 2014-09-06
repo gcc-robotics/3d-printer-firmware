@@ -18,7 +18,7 @@
 #define X_STEP_PIN          23
 #define X_DIR_PIN           22
 #define X_ENABLE_PIN        -1
-#define X_STOP_PIN          16
+#define X_STOP_PIN          34
 #define X_MIN_PIN           1
 #define X_MAX_PIN           0
 
