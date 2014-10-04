@@ -134,9 +134,9 @@
 // 110 is Pt100 with 1k pullup (non standard)
 // 70 is 500C thermistor for Pico hot end
 
-#define TEMP_SENSOR_0 -1
-#define TEMP_SENSOR_1 -1
-#define TEMP_SENSOR_2 0
+#define TEMP_SENSOR_0 7
+#define TEMP_SENSOR_1 7
+#define TEMP_SENSOR_2 7
 #define TEMP_SENSOR_BED 0
 
 // This makes temp sensor 1 a redundant sensor for sensor 0. If the temperatures difference between these sensors is to high the print will be aborted.
@@ -347,7 +347,7 @@ const bool Z_MAX_ENDSTOP_INVERTING = true; // set to true to invert the logic of
 #define DISABLE_INACTIVE_EXTRUDER true //disable only inactive extruders and keep active extruder enabled
 
 #define INVERT_X_DIR true    // for Mendel set to false, for Orca set to true
-#define INVERT_Y_DIR false    // for Mendel set to true, for Orca set to false
+#define INVERT_Y_DIR true    // for Mendel set to true, for Orca set to false
 #define INVERT_Z_DIR true     // for Mendel set to false, for Orca set to true
 #define INVERT_E0_DIR false   // for direct drive extruder v9 set to true, for geared extruder set to false
 #define INVERT_E1_DIR false    // for direct drive extruder v9 set to true, for geared extruder set to false
@@ -365,7 +365,7 @@ const bool Z_MAX_ENDSTOP_INVERTING = true; // set to true to invert the logic of
 // Travel limits after homing
 #define X_MAX_POS 400
 #define X_MIN_POS 0
-#define Y_MAX_POS 205
+#define Y_MAX_POS 375
 #define Y_MIN_POS 0
 #define Z_MAX_POS 200
 #define Z_MIN_POS 0
@@ -477,13 +477,13 @@ const bool Z_MAX_ENDSTOP_INVERTING = true; // set to true to invert the logic of
 
 //// MOVEMENT SETTINGS
 #define NUM_AXIS 4 // The axis order in all axis related arrays is X, Y, Z, E
-#define HOMING_FEEDRATE {6000, 50*60, 5, 0}  // set the homing speeds (mm/min)
+#define HOMING_FEEDRATE {6000, 3000, 5, 0}  // set the homing speeds (mm/min)
 
 // default settings
 
-#define DEFAULT_AXIS_STEPS_PER_UNIT   {80, 50,200 * 8/3,760*1.1}  // default steps per unit for Ultimaker
-#define DEFAULT_MAX_FEEDRATE          {9000, 25, 5, 25}    // (mm/sec)
-#define DEFAULT_MAX_ACCELERATION      {9000, 35,100,10000}    // X, Y, Z, E maximum start speed for accelerated moves. E default values are good for Skeinforge 40+, for older versions raise them a lot.
+#define DEFAULT_AXIS_STEPS_PER_UNIT   {80, 79.8076923077, 200 * 8/3, 760*1.1}  // default steps per unit for Ultimaker
+#define DEFAULT_MAX_FEEDRATE          {9000, 7000, 5, 25}    // (mm/sec)
+#define DEFAULT_MAX_ACCELERATION      {9000, 7000, 100, 10000}    // X, Y, Z, E maximum start speed for accelerated moves. E default values are good for Skeinforge 40+, for older versions raise them a lot.
 
 #define DEFAULT_ACCELERATION          250    // X, Y, Z and E max acceleration in mm/s^2 for printing moves
 #define DEFAULT_RETRACT_ACCELERATION  250   // X, Y, Z and E max acceleration in mm/s^2 for retracts

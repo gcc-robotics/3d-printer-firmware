@@ -56,8 +56,8 @@
 #define HEATER_1_PIN       -1
 #define HEATER_2_PIN       -1
 #define TEMP_0_PIN          6   
-#define TEMP_1_PIN         -1   
-#define TEMP_2_PIN         -1   
+#define TEMP_1_PIN          6   
+#define TEMP_2_PIN          6   
 #define HEATER_BED_PIN      4
 #define TEMP_BED_PIN       10
 
