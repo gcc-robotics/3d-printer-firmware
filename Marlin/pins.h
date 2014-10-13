@@ -13,13 +13,14 @@
 #define E1_MS2_PIN -1
 #define DIGIPOTSS_PIN -1
 
-#define KNOWN_BOARD 1
+//#define KNOWN_BOARD 1
+//#define LARGE_FLASH        true
 
 #define X_STEP_PIN          23
 #define X_DIR_PIN           22
 #define X_ENABLE_PIN        -1
 #define X_STOP_PIN          34
-#define X_MIN_PIN           1
+#define X_MIN_PIN           -1
 #define X_MAX_PIN           0
 
 /*#define X2_STEP_PIN          25
@@ -27,8 +28,8 @@
 #define X2_ENABLE_PIN        -1
 #define X2_STOP_PIN          16*/
 
-#define Y_STEP_PIN          27
-#define Y_DIR_PIN           26
+#define Y_STEP_PIN          26
+#define Y_DIR_PIN           27
 #define Y_ENABLE_PIN       -1
 #define Y_STOP_PIN          36
 #define Y_MIN_PIN -1
@@ -41,8 +42,8 @@
 #define Z_MIN_PIN 37
 #define Z_MAX_PIN 37
 
-#define E0_STEP_PIN         65
-#define E0_DIR_PIN          66
+#define E0_STEP_PIN         31
+#define E0_DIR_PIN          30
 #define E0_ENABLE_PIN      -1
 
 #define SDPOWER            -1
@@ -52,7 +53,7 @@
 #define PS_ON_PIN           9
 #define KILL_PIN           -1
 
-#define HEATER_0_PIN        13
+#define HEATER_0_PIN        5
 #define HEATER_1_PIN       -1
 #define HEATER_2_PIN       -1
 #define TEMP_0_PIN          6   
