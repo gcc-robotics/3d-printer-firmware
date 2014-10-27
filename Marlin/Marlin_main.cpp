@@ -36,7 +36,6 @@
   #endif
 #endif // ENABLE_AUTO_BED_LEVELING
 
-#include "ultralcd.h"
 #include "planner.h"
 #include "stepper.h"
 #include "temperature.h"
@@ -47,11 +46,6 @@
 #include "language.h"
 #include "pins_arduino.h"
 #include "math.h"
-
-#ifdef BLINKM
-#include "BlinkM.h"
-#include "Wire.h"
-#endif
 
 #if NUM_SERVOS > 0
 #include "Servo.h"
@@ -2254,21 +2248,6 @@ void process_commands()
       #endif
       break;
       //TODO: update for all axis, use for loop
-    #ifdef BLINKM
-    case 150: // M150
-      {
-        byte red;
-        byte grn;
-        byte blu;
-
-        if(code_seen('R')) red = code_value();
-        if(code_seen('U')) grn = code_value();
-        if(code_seen('B')) blu = code_value();
-
-        SendColors(red,grn,blu);
-      }
-      break;
-    #endif //BLINKM
     case 200: // M200 D<millimeters> set filament diameter and set E axis units to cubic millimeters (use S0 to set back to millimeters).
       {
         float area = .0;
@@ -2561,7 +2540,7 @@ void process_commands()
       break;
     #endif // NUM_SERVOS > 0
 
-    #if (LARGE_FLASH == true && ( BEEPER > 0 || defined(ULTRALCD) || defined(LCD_USE_I2C_BUZZER)))
+    #if (LARGE_FLASH == true && ( BEEPER > 0 || defined(LCD_USE_I2C_BUZZER)))
     case 300: // M300
     {
       int beepS = code_seen('S') ? code_value() : 110;
@@ -2572,8 +2551,6 @@ void process_commands()
           tone(BEEPER, beepS);
           delay(beepP);
           noTone(BEEPER);
-        #elif defined(ULTRALCD)
-		  lcd_buzz(beepS, beepP);
 		#elif defined(LCD_USE_I2C_BUZZER)
 		  lcd_buzz(beepP, beepS);
         #endif
