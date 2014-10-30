@@ -40,7 +40,6 @@
 #include "stepper.h"
 #include "temperature.h"
 #include "motion_control.h"
-#include "cardreader.h"
 #include "watchdog.h"
 #include "ConfigurationStore.h"
 #include "language.h"
@@ -514,9 +513,6 @@ void setup()
   setup_photpin();
   servo_init();
 
-  lcd_init();
-  _delay_ms(1000);	// wait 1sec to display the splash screen
-
   #if defined(CONTROLLERFAN_PIN) && CONTROLLERFAN_PIN > -1
     SET_OUTPUT(CONTROLLERFAN_PIN); //Set pin used for driver cooling fan
   #endif
@@ -571,7 +567,6 @@ void loop()
   manage_heater();
   manage_inactivity();
   checkHitEndstops();
-  lcd_update();
 }
 
 void get_command()
@@ -662,7 +657,6 @@ void get_command()
             }
             else {
               SERIAL_ERRORLNPGM(MSG_ERR_STOPPED);
-              LCD_MESSAGEPGM(MSG_STOPPED);
             }
             break;
           default:
@@ -718,7 +712,6 @@ void get_command()
         sprintf_P(time, PSTR("%i hours %i minutes"),hours, minutes);
         SERIAL_ECHO_START;
         SERIAL_ECHOLN(time);
-        lcd_setstatus(time);
         card.printingHasFinished();
         card.checkautostart(true);
 
@@ -1195,7 +1188,6 @@ void process_commands()
       }
       break;
     case 4: // G4 dwell
-      LCD_MESSAGEPGM(MSG_DWELL);
       codenum = 0;
       if(code_seen('P')) codenum = code_value(); // milliseconds to wait
       if(code_seen('S')) codenum = code_value() * 1000; // seconds to wait
@@ -1206,7 +1198,6 @@ void process_commands()
       while(millis()  < codenum ){
         manage_heater();
         manage_inactivity();
-        lcd_update();
       }
       break;
       #ifdef FWRETRACT
@@ -1396,11 +1387,9 @@ void process_commands()
 
               HOMEAXIS(Z);
             } else if (!((axis_known_position[X_AXIS]) && (axis_known_position[Y_AXIS]))) {
-                LCD_MESSAGEPGM(MSG_POSITION_UNKNOWN);
                 SERIAL_ECHO_START;
                 SERIAL_ECHOLNPGM(MSG_POSITION_UNKNOWN);
             } else {
-                LCD_MESSAGEPGM(MSG_ZPROBE_OUT);
                 SERIAL_ECHO_START;
                 SERIAL_ECHOLNPGM(MSG_ZPROBE_OUT);
             }
@@ -1443,7 +1432,6 @@ void process_commands()
             // Prevent user from running a G29 without first homing in X and Y
             if (! (axis_known_position[X_AXIS] && axis_known_position[Y_AXIS]) )
             {
-                LCD_MESSAGEPGM(MSG_POSITION_UNKNOWN);
                 SERIAL_ECHO_START;
                 SERIAL_ECHOLNPGM(MSG_POSITION_UNKNOWN);
                 break; // abort G29, since we don't know where we are
@@ -1636,7 +1624,6 @@ void process_commands()
     case 0: // M0 - Unconditional stop - Wait for user button press on LCD
     case 1: // M1 - Conditional stop - Wait for user button press on LCD
     {
-      LCD_MESSAGEPGM(MSG_USERWAIT);
       codenum = 0;
       if(code_seen('P')) codenum = code_value(); // milliseconds to wait
       if(code_seen('S')) codenum = code_value() * 1000; // seconds to wait
@@ -1648,21 +1635,17 @@ void process_commands()
         while(millis()  < codenum && !lcd_clicked()){
           manage_heater();
           manage_inactivity();
-          lcd_update();
         }
       }else{
         while(!lcd_clicked()){
           manage_heater();
           manage_inactivity();
-          lcd_update();
         }
       }
-      LCD_MESSAGEPGM(MSG_RESUMING);
     }
     break;
 #endif
     case 17:
-        LCD_MESSAGEPGM(MSG_NO_MOVE);
         enable_x();
         enable_y();
         enable_z();
@@ -1790,7 +1773,6 @@ void process_commands()
       sprintf_P(time, PSTR("%i min, %i sec"), min, sec);
       SERIAL_ECHO_START;
       SERIAL_ECHOLN(time);
-      lcd_setstatus(time);
       autotempShutdown();
       }
       break;
@@ -1907,7 +1889,6 @@ void process_commands()
       if(setTargetedHotend(109)){
         break;
       }
-      LCD_MESSAGEPGM(MSG_HEATING);
       #ifdef AUTOTEMP
         autotemp_enabled=false;
       #endif
@@ -1978,7 +1959,6 @@ void process_commands()
           }
           manage_heater();
           manage_inactivity();
-          lcd_update();
         #ifdef TEMP_RESIDENCY_TIME
             /* start/restart the TEMP_RESIDENCY_TIME timer whenever we reach target temp for the first time
               or when current temp falls outside the hysteresis after target temp was reached */
@@ -1990,14 +1970,12 @@ void process_commands()
           }
         #endif //TEMP_RESIDENCY_TIME
         }
-        LCD_MESSAGEPGM(MSG_HEATING_COMPLETE);
         starttime=millis();
         previous_millis_cmd = millis();
       }
       break;
     case 190: // M190 - Wait for bed heater to reach target.
     #if defined(TEMP_BED_PIN) && TEMP_BED_PIN > -1
-        LCD_MESSAGEPGM(MSG_BED_HEATING);
         if (code_seen('S')) {
           setTargetBed(code_value());
           CooldownNoWait = true;
@@ -2026,9 +2004,7 @@ void process_commands()
           }
           manage_heater();
           manage_inactivity();
-          lcd_update();
         }
-        LCD_MESSAGEPGM(MSG_BED_DONE);
         previous_millis_cmd = millis();
     #endif
         break;
@@ -2091,11 +2067,6 @@ void process_commands()
             WRITE(SUICIDE_PIN, HIGH);
         #endif
 
-        #ifdef ULTIPANEL
-          powersupply = true;
-          LCD_MESSAGEPGM(WELCOME_MSG);
-          lcd_update();
-        #endif
         break;
       #endif
 
@@ -2114,11 +2085,6 @@ void process_commands()
       #elif defined(PS_ON_PIN) && PS_ON_PIN > -1
         SET_OUTPUT(PS_ON_PIN);
         WRITE(PS_ON_PIN, PS_ON_ASLEEP);
-      #endif
-      #ifdef ULTIPANEL
-        powersupply = false;
-        LCD_MESSAGEPGM(MACHINE_NAME" "MSG_OFF".");
-        lcd_update();
       #endif
 	  break;
 
@@ -2193,7 +2159,6 @@ void process_commands()
       starpos = (strchr(strchr_pointer + 5,'*'));
       if(starpos!=NULL)
         *(starpos-1)='\0';
-      lcd_setstatus(strchr_pointer + 5);
       break;
     case 114: // M114
       SERIAL_PROTOCOLPGM("X:");
@@ -2494,7 +2459,6 @@ void process_commands()
             while(digitalRead(pin_number) != target){
               manage_heater();
               manage_inactivity();
-              lcd_update();
             }
           }
         }
@@ -2840,13 +2804,11 @@ void process_commands()
         disable_e1();
         disable_e2();
         delay(100);
-        LCD_ALERTMESSAGEPGM(MSG_FILAMENTCHANGE);
         uint8_t cnt=0;
         while(!lcd_clicked()){
           cnt++;
           manage_heater();
           manage_inactivity();
-          lcd_update();
           if(cnt==0)
           {
           #if BEEPER > 0
@@ -2997,7 +2959,6 @@ void process_commands()
     break;
     case 999: // M999: Restart after being stopped
       Stopped = false;
-      lcd_reset_alert_level();
       gcode_LastN = Stopped_gcode_LastN;
       FlushSerialRequestResend();
     break;
@@ -3505,7 +3466,6 @@ void kill()
 #endif
   SERIAL_ERROR_START;
   SERIAL_ERRORLNPGM(MSG_ERR_KILLED);
-  LCD_ALERTMESSAGEPGM(MSG_KILLED);
   suicide();
   while(1) { /* Intentionally left empty */ } // Wait for reset
 }
@@ -3518,7 +3478,6 @@ void Stop()
     Stopped_gcode_LastN = gcode_LastN; // Save last g_code for restart
     SERIAL_ERROR_START;
     SERIAL_ERRORLNPGM(MSG_ERR_STOPPED);
-    LCD_MESSAGEPGM(MSG_STOPPED);
   }
 }
 
